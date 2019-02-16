@@ -1,0 +1,16 @@
+----startini
+title_alias	ティア新刊
+fullfilepath	C:\Users\hoge\hogehoge.txt
+totalchar	100000
+deadline	2019/04/01
+
+title_alias	コミケ新刊
+fullfilepath	C:\Users\hoge\fugafuga.txt
+totalchar	80000
+deadline	2019/06/01
+----endini
+※　複数ファイルを同時に設定できますが、ログが横長になります。
+
+//進捗ログ - ログヘッダーは行頭の//を保ったまま適当にtabで整形してください
+//			コミケ										ティア										
+//日付		全文	本文	本文+	補稿+	推奨字数/日	全文	本文	本文+	補稿+	推奨字数/日
