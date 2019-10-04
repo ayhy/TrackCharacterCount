@@ -1,16 +1,23 @@
+TrackerLogSample
+
 ----startini
-title_alias	�e�B�A�V��
+separate_track	True
+
+title_alias	ティア新刊
 fullfilepath	C:\Users\hoge\hogehoge.txt
 totalchar	100000
-deadline	2019/04/01
+deadline	2020/02/01
 
-title_alias	�R�~�P�V��
+title_alias	コミケ新刊
 fullfilepath	C:\Users\hoge\fugafuga.txt
 totalchar	80000
-deadline	2019/06/01
+deadline	2020/04/15
 ----endini
-���@�����t�@�C���𓯎��ɐݒ�ł��܂����A���O�������ɂȂ�܂��B
+※　複数ファイルを同時に追跡する場合は、デフォルトではseperate_trackがTrueとなっており、一行内に別々に進捗が記入されます。
+seoerate_track=Falseを設定することで、結果をまとめることができます。
+章立てでファイルを分けている場合などに全体の進捗を見たい場合に有効です。
+その場合、最も早いdeadlineを基準に推奨文字数/日が計算されます。
 
-//�i�����O - ���O�w�b�_�[�͍s����//��ۂ����܂ܓK����tab�Ő��`���Ă�������
-//			�R�~�P										�e�B�A										
-//���t		�S��	�{��	�{��+	��e+	��������/��	�S��	�{��	�{��+	��e+	��������/��
+//進捗ログ - ログヘッダーは行頭の//を保ったまま適当に整形してください
+//		コミケ--------------------------------------------	ティア--------------------------------------------
+//日付		全文	本文	本文+	補稿+	推奨字数/日	全文	本文	本文+	補稿+	推奨字数/日
