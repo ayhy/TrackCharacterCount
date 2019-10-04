@@ -23,7 +23,7 @@ def updatelog(fullfilename):
     targetFiles=[]
     targetChars=[]
     targetDates=[]
-    track_separate=False
+    track_separate=True
     lastLine=[]
 
     now = datetime.now()
@@ -39,7 +39,7 @@ def updatelog(fullfilename):
                 break
             if is_in_ini:
                 if line.startswith("track_separate"):
-                    tracks_separate = (line == "True")
+                    track_separate = (line == "True")
                 if line.startswith("fullfilepath"):
                     targetFiles.append(line.split("\t")[1].strip("\n").replace("\\", "/") )
                 if line.startswith("deadline"):
@@ -59,7 +59,7 @@ def updatelog(fullfilename):
     countlist=[]
     previousTotalChars=[0]*targetNum
     previousMainChars=[0]*targetNum
-    remaining = [date - today for date in targetDates]
+    remaining = [(date - today).days for date in targetDates]
 
     scanrows=targetNum
     if track_separate==False:
@@ -73,29 +73,34 @@ def updatelog(fullfilename):
         for i in range(scanrows):
             previousTotalChars[i]=int(lastLine[i*6+1])
             previousMainChars[i]=int(lastLine[i*6+2])
-    for i, targetFile in enumerate(targetFiles):
-        with open(targetFile, 'r', encoding='utf-8') as readfile:
-            counts = getCurrentCharacterCount(targetFile)
-        counts["deltaMain"]=counts["main"] - previousMainChars[i]
-        counts["deltaComment"]=counts["total"] - previousTotalChars[i] - counts["main"]
-        counts["deltaDate"]=targetDates[i] - today
-        counts["charRate"]=math.ceil( (targetChars[i]- counts["main"])/remaining[i].days) 
-        countlist.append(counts)
-
     if track_separate:
         for i, targetFile in enumerate(targetFiles):
+            with open(targetFile, 'r', encoding='utf-8') as readfile:
+                counts = getCurrentCharacterCount(targetFile)
+            counts["deltaMain"]=counts["main"] - previousMainChars[i]
+            counts["deltaComment"]=counts["total"] - previousTotalChars[i] - counts["deltaMain"]
+            counts["charRate"]=math.ceil( (targetChars[i]- counts["main"])/remaining[i])
+            countlist.append(counts)
+
             progressparFile = "\t" + str(countlist[i]["total"]) + "\t" + str(countlist[i]["main"]) + "\t" \
                                    + str(countlist[i]["deltaMain"]) + "\t" + str(countlist[i]["deltaComment"]) + "\t" \
-                                   + str(advisedrates[i]) + "\t"
+                                   + str(countlist[i]["charRate"]) + "\t"
             todaysprogress +=progressparFile
         todaysprogress +="\n"
     else:
-        print(countlist)
-        counted = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.items()), countlist)
-        advisedrate =math.ceil( (sum(targetChars) - counted["main"]) / min(remaining).days)
-        progressMerged = "\t" + str(counted["total"]) + "\t" + str(counted["main"]) + "\t" \
-                              + str(counted["deltaMain"]) + "\t" + str(counted["deltaComment"]) + "\t" \
-                              + str(advisedrate) + "\t"
+        merged_count={"total":0,"main":0}
+        for i, targetFile in enumerate(targetFiles):
+            with open(targetFile, 'r', encoding='utf-8') as readfile:
+                count = getCurrentCharacterCount(targetFile)
+            merged_count["main"]=merged_count["main"]+count["main"]
+            merged_count["total"]=merged_count["total"] +count["total"]
+        merged_count["deltaMain"] =  merged_count["main"] - previousMainChars[0]
+        merged_count["deltaComment"]= merged_count["total"] - previousTotalChars[0] - merged_count["deltaMain"]
+        merged_count["charRate"] =  math.ceil( (sum(targetChars) - merged_count["main"]) / min(remaining))
+
+        progressMerged = "\t" + str(merged_count["total"]) + "\t" + str(merged_count["main"]) + "\t" \
+                              + str(merged_count["deltaMain"]) + "\t" + str(merged_count["deltaComment"]) + "\t" \
+                              + str(merged_count["charRate"]) + "\t"
         todaysprogress += progressMerged + "\n"
 
     with open(fullfilename, 'a', encoding='utf-8') as outfile:
