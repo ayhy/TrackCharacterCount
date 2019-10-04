@@ -1,7 +1,7 @@
 TrackerLogSample
 
 ----startini
-separate_track	True
+track_separate	True
 
 title_alias	ティア新刊
 fullfilepath	C:\Users\hoge\hogehoge.txt
