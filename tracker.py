@@ -39,7 +39,9 @@ def updatelog(fullfilename):
                 break
             if is_in_ini:
                 if line.startswith("track_separate"):
-                    track_separate = (line == "True")
+                    track_separate_str=line.split("\t")[1].strip("\n")
+                    track_separate = (track_separate_str == "True")
+                    print("track separately")
                 if line.startswith("fullfilepath"):
                     targetFiles.append(line.split("\t")[1].strip("\n").replace("\\", "/") )
                 if line.startswith("deadline"):
